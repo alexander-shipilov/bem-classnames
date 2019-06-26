@@ -162,12 +162,6 @@ i.e. it's a string that consists of alphanumerics and '-' char
 
 ` bool `
 
-### Requires
-
-* [function] `-bem-test` 
-
-* [variable] `-bem-class-name-chars` 
-
 ---
 
 ## -bem-is-delimiter
@@ -197,12 +191,6 @@ Checks if the given value is a delimiter
 ### Returns
 
 ` bool `
-
-### Requires
-
-* [function] `-bem-test` 
-
-* [variable] `-bem-delimiter-chars` 
 
 ---
 
@@ -264,20 +252,6 @@ Configures bem
 
 * bem-config($config-props): #{ $formatter-prop } should be a function or null
 
-### Requires
-
-* [function] `-bem-is-delimiter` 
-
-* [variable] `-bem-config` 
-
-* [variable] `-bem-delimiter-props` 
-
-* [variable] `-bem-formatter-props` 
-
-* [variable] `-bem-config` 
-
-* [variable] `-bem-config` 
-
 ---
 
 ## -bem-is-name
@@ -304,14 +278,6 @@ private
 | Name  | Description | Type | Default Value |
 | ----- | ----------- | ---- | ------------- |
 | value | *           |      |               |
-
-### Requires
-
-* [function] `-bem-is-class-name` 
-
-* [variable] `-bem-config` 
-
-* [variable] `-bem-config` 
 
 ---
 
@@ -340,10 +306,6 @@ private
 ### Returns
 
 ` string `
-
-### Requires
-
-* [variable] `-bem-config` 
 
 ---
 
@@ -380,16 +342,6 @@ private
 ### Throws
 
 * Invalid #{ $type } #{ inspect($value) }
-
-### Requires
-
-* [function] `-bem-is-class-name` 
-
-* [function] `-bem-format-name` 
-
-* [function] `-bem-is-name` 
-
-* [variable] `-bem-config` 
 
 ---
 
@@ -429,14 +381,6 @@ private
 ### Returns
 
 ` string `
-
-### Requires
-
-* [function] `-bem-to-name` 
-
-* [function] `-bem-to-name` 
-
-* [variable] `-bem-config` 
 
 ---
 
@@ -527,12 +471,6 @@ private
 
 ` string[] `
 
-### Requires
-
-* [function] `-bem-to-modifiers` 
-
-* [function] `-bem-format-modifier` 
-
 ---
 
 ## -bem-class-names
@@ -560,10 +498,6 @@ private
 ### Returns
 
 ` ?list `
-
-### Requires
-
-* [function] `-bem-format-modifiers` 
 
 ---
 
@@ -599,12 +533,6 @@ Creates block class names
 bem-block(FooBar, (ted: qux, zoo: false)) // -&gt; .FooBar.FooBar_ted_qux
 bem-block(FooBar, (ted: baz), bem-block(Qux, foo)) // -&gt; .FooBar.FooBar_ted_baz.Qux.Qux_foo
 ```
-
-### Requires
-
-* [function] `-bem-class-names` 
-
-* [function] `-bem-to-name` 
 
 ---
 
@@ -644,16 +572,6 @@ Creates element class names
 bem-element(FooBar, baz, (ted: qux, zoo: false)) // -&gt; .FooBar__baz.FooBar__baz_ted_qux
 bem-element(FooBar, baz, (ted: qux), bem-block(Qux, foo)) // -&gt; .FooBar__baz.FooBar__baz_ted_qux.Qux.Qux_foo
 ```
-
-### Requires
-
-* [function] `-bem-to-name` 
-
-* [function] `-bem-to-name` 
-
-* [function] `-bem-class-names` 
-
-* [variable] `-bem-config` 
 
 ---
 
@@ -695,11 +613,5 @@ bem-modifiers(FooBar, (ted: qux, zoo: false)); // -&gt; .FooBar_ted_qux
 ### Throws
 
 * Invalid class name #{ inspect($class-name) }
-
-### Requires
-
-* [function] `-bem-is-class-name` 
-
-* [function] `-bem-format-modifiers` 
 
 ---
