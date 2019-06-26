@@ -39,8 +39,8 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { string } $string
-/// @param { string } $chars
+/// @param { string } $string String
+/// @param { string } $chars Expected chars
 /// @return { bool }
 ///
 @function -bem-test($string, $chars) {
@@ -64,7 +64,7 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { string } $value
+/// @param { string } $value Value
 /// @return { bool }
 ///
 @function -bem-is-class-name($value) {
@@ -75,7 +75,7 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { string } $value
+/// @param { string } $value Value
 /// @return { bool }
 ///
 @function -bem-is-delimiter($value) {
@@ -122,7 +122,7 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { * } $value
+/// @param { * } $value Value
 ///
 @function -bem-is-name($value) {
   $element-delimiter: map-get($-bem-config, element-delimiter);
@@ -136,7 +136,7 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { * } $value
+/// @param { * } $value Value
 ///
 /// @return { string }
 ///
@@ -149,8 +149,8 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { string } $type
-/// @param { * } $value
+/// @param { string } $type Part type
+/// @param { * } $value Value
 ///
 @function -bem-to-name($type, $value) {
   @if (-bem-is-class-name($value)) {
@@ -168,9 +168,9 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { string } $class-name
-/// @param { string } $mod-name
-/// @param { * } $mod-value
+/// @param { string } $class-name Class name
+/// @param { string } $mod-name Modifier name
+/// @param { * } $mod-value Modifier value
 /// @return { string }
 ///
 @function -bem-format-modifier($class-name, $mod-name, $mod-value) {
@@ -191,7 +191,7 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { string | list | map } $mods
+/// @param { string | list | map } $mods Modifiers
 /// @return { map }
 ///
 @function -bem-to-modifiers($mods) {
@@ -219,8 +219,8 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { string } $class-name
-/// @param { string | list | map } $mods
+/// @param { string } $class-name Class name
+/// @param { string | list | map } $mods Modifiers
 /// @return { string[] }
 ///
 @function -bem-format-modifiers($class-name, $mods) {
@@ -244,12 +244,12 @@ $-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-
 /// @group bem
 /// @access private
 ///
-/// @param { string } $class-name
-/// @param { string | list | map } $mods [null]
-/// @param { * } $mixins...
+/// @param { string } $class-name  Class name
+/// @param { string | list | map } $mods Modifiers
+/// @param { * } $mixins... Mixins
 /// @return { ?list }
 ///
-@function -bem-class-names($class-name, $mods: null, $mixins...) {
+@function -bem-class-names($class-name, $mods, $mixins...) {
   @return class-names($class-name, -bem-format-modifiers($class-name, $mods), $mixins...);
 }
 

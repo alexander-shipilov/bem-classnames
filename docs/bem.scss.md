@@ -122,10 +122,10 @@ Test if the given string is consists of the passed chars.
 
 ### Parameters
 
-| Name   | Description | Type | Default Value |
-| ------ | ----------- | ---- | ------------- |
-| string | string      |      |               |
-| chars  | string      |      |               |
+| Name   | Description    | Type   | Default Value |
+| ------ | -------------- | ------ | ------------- |
+| string | String         | string |               |
+| chars  | Expected chars | string |               |
 
 ### Returns
 
@@ -154,9 +154,9 @@ i.e. it's a string that consists of alphanumerics and '-' char
 
 ### Parameters
 
-| Name  | Description | Type | Default Value |
-| ----- | ----------- | ---- | ------------- |
-| value | string      |      |               |
+| Name  | Description | Type   | Default Value |
+| ----- | ----------- | ------ | ------------- |
+| value | Value       | string |               |
 
 ### Returns
 
@@ -184,9 +184,9 @@ Checks if the given value is a delimiter
 
 ### Parameters
 
-| Name  | Description | Type | Default Value |
-| ----- | ----------- | ---- | ------------- |
-| value | string      |      |               |
+| Name  | Description | Type   | Default Value |
+| ----- | ----------- | ------ | ------------- |
+| value | Value       | string |               |
 
 ### Returns
 
@@ -277,7 +277,7 @@ private
 
 | Name  | Description | Type | Default Value |
 | ----- | ----------- | ---- | ------------- |
-| value | *           |      |               |
+| value | Value       | *    |               |
 
 ---
 
@@ -301,7 +301,7 @@ private
 
 | Name  | Description | Type | Default Value |
 | ----- | ----------- | ---- | ------------- |
-| value | *           |      |               |
+| value | Value       | *    |               |
 
 ### Returns
 
@@ -334,10 +334,10 @@ private
 
 ### Parameters
 
-| Name  | Description | Type | Default Value |
-| ----- | ----------- | ---- | ------------- |
-| type  | string      |      |               |
-| value | *           |      |               |
+| Name  | Description | Type   | Default Value |
+| ----- | ----------- | ------ | ------------- |
+| type  | Part type   | string |               |
+| value | Value       | *      |               |
 
 ### Throws
 
@@ -372,11 +372,11 @@ private
 
 ### Parameters
 
-| Name       | Description | Type | Default Value |
-| ---------- | ----------- | ---- | ------------- |
-| class-name | string      |      |               |
-| mod-name   | string      |      |               |
-| mod-value  | *           |      |               |
+| Name       | Description    | Type   | Default Value |
+| ---------- | -------------- | ------ | ------------- |
+| class-name | Class name     | string |               |
+| mod-name   | Modifier name  | string |               |
+| mod-value  | Modifier value | *      |               |
 
 ### Returns
 
@@ -418,9 +418,9 @@ private
 
 ### Parameters
 
-| Name | Description       | Type | Default Value |
-| ---- | ----------------- | ---- | ------------- |
-| mods | string, list, map |      |               |
+| Name | Description | Type              | Default Value |
+| ---- | ----------- | ----------------- | ------------- |
+| mods | Modifiers   | string, list, map |               |
 
 ### Returns
 
@@ -462,10 +462,10 @@ private
 
 ### Parameters
 
-| Name       | Description       | Type | Default Value |
-| ---------- | ----------------- | ---- | ------------- |
-| class-name | string            |      |               |
-| mods       | string, list, map |      |               |
+| Name       | Description | Type              | Default Value |
+| ---------- | ----------- | ----------------- | ------------- |
+| class-name | Class name  | string            |               |
+| mods       | Modifiers   | string, list, map |               |
 
 ### Returns
 
@@ -482,18 +482,18 @@ private
 ### Source
 
 ```scss
-@function -bem-class-names($class-name, $mods: null, $mixins...) { 
+@function -bem-class-names($class-name, $mods, $mixins...) { 
   @return class-names($class-name, -bem-format-modifiers($class-name, $mods), $mixins...);
 }
 ```
 
 ### Parameters
 
-| Name       | Description       | Type | Default Value |
-| ---------- | ----------------- | ---- | ------------- |
-| class-name | string            |      |               |
-| mods       | string, list, map | null |               |
-| mixins...  | *                 |      |               |
+| Name       | Description | Type              | Default Value |
+| ---------- | ----------- | ----------------- | ------------- |
+| class-name | Class name  | string            |               |
+| mods       | Modifiers   | string, list, map |               |
+| mixins...  | Mixins      | *                 |               |
 
 ### Returns
 
