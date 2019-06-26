@@ -1,6 +1,6 @@
 {
   "name": "@helioscompanies/bem-classnames",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "JavaScript and Sass utilities to manage BEM class names",
   "main": "lib/index.js",
   "scripts": {
@@ -8,10 +8,11 @@
     "build:js": "babel src --out-dir ./lib",
     "build:scss": "postcss src/bem.scss > index.scss",
     "build:dts": "jsdoc -t node_modules/tsd-jsdoc/dist -d console src/bem.js src/ReactHelper.js > index.d.ts",
-    "docs": "npm run docs:scss & npm run docs:js",
+    "docs": "npm run docs:scss && npm run docs:js",
     "docs:js": "jsdoc2md src/*.js > docs/bem.js.md",
     "docs:scss": "sassdoc -d docs --theme ./sassdoc-md src/bem.scss",
-    "test": "jest"
+    "test": "jest",
+    "prepublishOnly": "npm run test && npm run build && npm run docs"
   },
   "repository": {
     "type": "git",
@@ -79,8 +80,7 @@
     "@types/classnames": "^2.2.8"
   },
   "peerDependencies": {
-    "classnames": "^2.2.6",
-    "@helioscompanies/sass-classnames": "^1.0.0"
+    "classnames": "^2.2.6"
   },
   "publishConfig": {
     "access": "public"

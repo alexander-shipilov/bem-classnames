@@ -21,7 +21,7 @@ yarn add @helioscompanies/bem-classnames
 
 ### JavaScript
 
-See [JavaScript API](docs/bem.js.md)
+[JavaScript API](docs/bem.js.md)
 
 ```js
 // file: bem-config.js
@@ -60,13 +60,12 @@ render(<FooBar className="test" />, document.getElementById("test"));
 
 ### Scss
 
-See [Scss API](docs/bem.scss.md)
+[Scss API](docs/bem.scss.md)
 
 ```scss
 // file: bem-config.scss
 
 @import "~sassdash/index";
-@import "~@helioscompanies/sass-classnames/index";
 @import "~@helioscompanies/bem-classnames/index";
 
 @function -my-bem-block-formatter($name) {
