@@ -50,6 +50,8 @@ class FooBar extends Component {
   }
 }
 
+FooBar.className = 'FooBar';
+
 render(<FooBar className="test" />, document.getElementById("test"));
 
 // <div class="my-foo-bar test">

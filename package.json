@@ -1,6 +1,6 @@
 {
   "name": "@helioscompanies/bem-classnames",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JavaScript and Sass utilities to manage BEM class names",
   "main": "lib/index.js",
   "scripts": {
