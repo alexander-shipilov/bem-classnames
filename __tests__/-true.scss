@@ -1,0 +1,5 @@
+@import "../node_modules/sass-true/sass/true";
+
+@mixin assert-equal-selector($actual, $expected) {
+  @include assert-equal($actual, selector-parse($expected));
+}

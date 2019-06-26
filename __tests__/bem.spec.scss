@@ -1,0 +1,212 @@
+@import '~sassdash/index';
+@import '../src/bem';
+@import './-true';
+
+$default-config: bem-config();
+$config: null;
+
+@function arglist($arglist...) {
+  @return $arglist;
+}
+
+/// @access private
+@function -bem-block-formatter($name) {
+  @return 'b_#{ $name }';
+}
+
+/// @access private
+@function -bem-element-formatter($name) {
+  @return 'e_#{ $name }';
+}
+
+/// @access private
+@function -bem-modifier-formatter($name) {
+  @return 'm_#{ $name }';
+}
+
+/// @access private
+@function -bem-modifier-value-formatter($name) {
+  @return 'v_#{ $name }';
+}
+
+@mixin before-each() {
+  $config: bem-config($default-config) !global;
+
+  @content;
+}
+
+@include describe('lib/bem') {
+
+  @include describe('bem-config($config-props)') {
+
+    @include before-each() {
+      @include it('config() should return current config') {
+        @include assert-equal($default-config, (
+          element-delimiter: '__',
+          modifier-delimiter: '_',
+          formatter: null,
+          block-formatter: null,
+          element-formatter: null,
+          modifier-formatter: null,
+          modifier-value-formatter: null
+        ));
+      }
+    }
+
+    @include before-each() {
+      @include it('should append $config-props') {
+        $config-props: (element-delimiter: '--', modifier-delimiter: '__');
+        $config: bem-config($config-props);
+
+        @include assert-equal($config, map-merge($default-config, $config-props));
+        @include assert-equal(bem-config(), $config);
+      }
+    }
+  }
+
+  @include describe('bem-block($block-name, $mods: null, $mixins...)') {
+    @include before-each() {
+      @include it('should build class names using `$block-name` and `$mods`') {
+        @include assert-equal-selector(bem-block(FooBar), '.FooBar');
+        @include assert-equal-selector(bem-block(FooBar, (ted:baz)), '.FooBar.FooBar_ted_baz');
+      }
+    }
+
+    @include before-each() {
+      @include it('should append modifiers classes') {
+        @include assert-equal-selector(bem-block(FooBar, (ted: true)), '.FooBar.FooBar_ted');
+        @include assert-equal-selector(bem-block(FooBar, (ted: qux)), '.FooBar.FooBar_ted_qux');
+        @include assert-equal-selector(bem-block(FooBar, (ted: qux, zoo: false)), '.FooBar.FooBar_ted_qux');
+      }
+    }
+
+    @include before-each() {
+      @include it('should append `mixins`') {
+        @include assert-equal-selector(bem-block(FooBar, (ted: baz), other),
+          '.FooBar.FooBar_ted_baz.other');
+        @include assert-equal-selector(bem-block(FooBar, (ted: baz), (other1, other2)),
+          '.FooBar.FooBar_ted_baz.other1.other2');
+        @include assert-equal-selector(bem-block(FooBar, (ted: baz), (other1: true, other2: false)),
+          '.FooBar.FooBar_ted_baz.other1');
+        @include assert-equal-selector(bem-block(FooBar, (ted: baz), bem-block(Qux, foo)),
+          '.FooBar.FooBar_ted_baz.Qux.Qux_foo');
+      }
+    }
+
+    @include before-each() {
+      @include it('should use block-formatter and then formatter') {
+        $config: bem-config((
+          formatter: get-function(_kebab-case),
+          block-formatter: get-function(-bem-block-formatter)
+        ));
+
+        @include assert-equal-selector(bem-block('FooBar', (modName: modValue), (mixinClass: true)),
+          '.b-foo-bar.b-foo-bar_mod-name_mod-value.mixinClass')
+      }
+    }
+  }
+
+  @include describe('bem-element($block-name, $element-name, $mods: null, $mixins...)') {
+    @include before-each() {
+      @include it('should build class names using `$block-name`, `$element-name`') {
+        @include assert-equal-selector(bem-element(FooBar, baz), '.FooBar__baz');
+        @include assert-equal-selector(bem-element(FooBar, baz, (ted: qux)), '.FooBar__baz.FooBar__baz_ted_qux');
+      }
+    }
+
+    @include before-each() {
+      @include it('should append modifiers classes from `$mods`') {
+        @include assert-equal-selector(bem-element(FooBar, baz, (ted: true)),
+          '.FooBar__baz.FooBar__baz_ted');
+        @include assert-equal-selector(bem-element(FooBar, baz, (ted: qux)),
+          '.FooBar__baz.FooBar__baz_ted_qux');
+        @include assert-equal-selector(bem-element(FooBar, baz, (ted: qux, zoo: false)),
+          '.FooBar__baz.FooBar__baz_ted_qux');
+      }
+    }
+
+    @include before-each() {
+      @include it('should append `mixins`') {
+        @include assert-equal-selector(bem-element(FooBar, baz, (ted: qux), other),
+          '.FooBar__baz.FooBar__baz_ted_qux.other');
+        @include assert-equal-selector(bem-element(FooBar, baz, (ted: qux), (other1, other2)),
+          '.FooBar__baz.FooBar__baz_ted_qux.other1.other2');
+        @include assert-equal-selector(bem-element(FooBar, baz, (ted: qux), (other1: true, other2: false)),
+          '.FooBar__baz.FooBar__baz_ted_qux.other1');
+        @include assert-equal-selector(bem-element(FooBar, baz, (ted: qux), bem-block(Qux, foo)),
+          '.FooBar__baz.FooBar__baz_ted_qux.Qux.Qux_foo');
+      }
+    }
+
+    @include before-each() {
+      @include it('should use config.element-formatter and then config.formatter') {
+        $config: bem-config((
+          element-delimiter: '--',
+          formatter: get-function(_kebab-case),
+          element-formatter: get-function(-bem-element-formatter)
+        ));
+
+        @include assert-equal-selector(bem-element('FooBar', 'ted', (modName: modValue), (mixinClass: true)),
+          '.foo-bar--e-ted.foo-bar--e-ted_mod-name_mod-value.mixinClass');
+      }
+    }
+  }
+
+  @include describe('bem-modifiers($class-name, $mods: null)') {
+    @include before-each() {
+      @include it('should build class names using `$class-name`, `$mods`') {
+        @include assert-equal-selector(bem-modifiers(FooBar, (ted: true)), '.FooBar_ted');
+        @include assert-equal-selector(bem-modifiers(FooBar, (ted: qux)), '.FooBar_ted_qux');
+        @include assert-equal-selector(bem-modifiers(FooBar, (ted: qux, zoo: false)), '.FooBar_ted_qux');
+      }
+    }
+
+    @include it('should support types: string, list, map') {
+      // string
+      @include assert-equal-selector(bem-modifiers(FooBar, ted), '.FooBar_ted');
+
+      // list
+      @include assert-equal-selector(bem-modifiers(FooBar, (ted,)), '.FooBar_ted');
+      @include assert-equal-selector(bem-modifiers(FooBar, arglist(ted)), '.FooBar_ted');
+
+      // map
+      @include assert-equal-selector(bem-modifiers(FooBar, (ted: qux)), '.FooBar_ted_qux');
+      @include assert-equal-selector(bem-modifiers(FooBar, (ted: qux, zoo: false)), '.FooBar_ted_qux');
+    }
+
+
+    @include before-each() {
+      @include it('should return null if no `$mods` provided or `$mods` is empty') {
+        @include assert-equal(bem-modifiers(FooBar), null);
+        @include assert-equal(bem-modifiers(FooBar, ()), null);
+      }
+    }
+
+    @include before-each() {
+      @include it('should skip `$mods` keys with falsy values (but not 0)') {
+        @include assert-equal(bem-modifiers(FooBar, (ted: null)), null);
+        @include assert-equal(bem-modifiers(FooBar, (ted: false)), null);
+        @include assert-equal(bem-modifiers(FooBar, (ted: '')), null);
+
+        @include assert-equal-selector(bem-modifiers(FooBar, (ted: 0)), '.FooBar_ted_0');
+      }
+    }
+
+    @include before-each() {
+      @include it('should use config.modifierFormatter, config.modifierValueFormatter and then config.formatter') {
+        $config: bem-config((
+          modifier-delimiter: '--',
+          formatter: get-function(_kebab-case),
+          modifier-formatter: get-function(-bem-modifier-formatter),
+          modifier-value-formatter: get-function(-bem-modifier-value-formatter)
+        ));
+
+        @include assert-equal-selector(bem-element('FooBar', 'ted', (modName: 'modValue'), (mixinClass: true)),
+          '.foo-bar__ted.foo-bar__ted--m-mod-name--v-mod-value.mixinClass');
+      }
+    }
+  }
+}
+
+
+

@@ -1,0 +1,88 @@
+{
+  "name": "@helioscompanies/bem-classnames",
+  "version": "1.0.0",
+  "description": "JavaScript and Sass utilities to manage BEM class names",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "npm run build:js & npm run build:scss",
+    "build:js": "babel src --out-dir ./lib",
+    "build:scss": "postcss src/bem.scss > index.scss",
+    "build:dts": "jsdoc -t node_modules/tsd-jsdoc/dist -d console src/bem.js src/ReactHelper.js > index.d.ts",
+    "docs": "npm run docs:scss & npm run docs:js",
+    "docs:js": "jsdoc2md src/*.js > docs/bem.js.md",
+    "docs:scss": "sassdoc -d docs --theme ./sassdoc-md src/bem.scss",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexander-shipilov/bem-classnames.git"
+  },
+  "files": [
+    "lib",
+    "index.d.ts",
+    "index.scss",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "bem",
+    "block element modifier",
+    "css",
+    "sass",
+    "scss",
+    "classnames",
+    "classname",
+    "util",
+    "utility",
+    "react",
+    "helper"
+  ],
+  "author": "Alexander Shipilov <alexander.shipilov@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alexander-shipilov/bem-classnames/issues"
+  },
+  "homepage": "https://github.com/alexander-shipilov/bem-classnames#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@helioscompanies/sass-classnames": "^1.0.0",
+    "acorn": "^6.1.1",
+    "babel-eslint": "^10.0.2",
+    "classnames": "^2.2.6",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "fs-extra": "^8.0.1",
+    "jest": "^24.8.0",
+    "jsdoc": "^3.6.2",
+    "jsdoc-to-markdown": "^5.0.0",
+    "lodash": "^4.17.11",
+    "markdown-table": "^1.1.3",
+    "node-sass": "^4.12.0",
+    "postcss": "^7.0.17",
+    "postcss-cli": "^6.1.2",
+    "postcss-import": "^12.0.1",
+    "postcss-scss": "^2.0.0",
+    "sass": "^1.22.0",
+    "sass-true": "^5.0.0",
+    "sassdash": "^0.9.0",
+    "sassdoc": "^2.7.0",
+    "sassdoc-extras": "^2.5.0",
+    "swig": "^1.4.2",
+    "tsd-jsdoc": "^2.3.0"
+  },
+  "dependencies": {
+    "@types/classnames": "^2.2.8"
+  },
+  "peerDependencies": {
+    "classnames": "^2.2.6",
+    "@helioscompanies/sass-classnames": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

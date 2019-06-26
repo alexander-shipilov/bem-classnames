@@ -1,0 +1,311 @@
+@import "../node_modules/@helioscompanies/sass-classnames/index";
+
+/// @group bem
+/// @access private
+/// @prop { string } $-bem-config.element-delimiter [__] - Element delimiter
+/// @prop { string } $-bem-config.modifier-delimiter [_] - Modifier delimiter
+/// @prop { ?function } $-bem-config.formatter - Formatter
+/// @prop { ?function } $-bem-config.block-formatter - Block formatter
+/// @prop { ?function } $-bem-config.element-formatter - Element formatter
+/// @prop { ?function } $-bem-config.modifier-formatter - Modifier formatter
+/// @prop { ?function } $-bem-config.modifier-value-formatter - Modifier value formatter
+$-bem-config: (
+  element-delimiter: __,
+  modifier-delimiter: _,
+  formatter: null,
+  block-formatter: null,
+  element-formatter: null,
+  modifier-formatter: null,
+  modifier-value-formatter: null
+) !default;
+
+/// @group bem
+/// @access private
+$-bem-delimiter-chars: -_;
+
+/// @group bem
+/// @access private
+$-bem-class-name-chars: abcdefghijklmnopqrstuvwxyz0123456789-_;
+
+/// @group bem
+/// @access private
+$-bem-delimiter-props: (element-delimiter, modifier-delimiter);
+
+/// @group bem
+/// @access private
+$-bem-formatter-props: (formatter, block-formatter, element-formatter, modifier-formatter, modifier-value-formatter);
+
+/// Test if the given string is consists of the passed chars.
+/// @group bem
+/// @access private
+///
+/// @param { string } $string
+/// @param { string } $chars
+/// @return { bool }
+///
+@function -bem-test($string, $chars) {
+  $length: str-length($string);
+  $match: false;
+
+  @for $index from 1 to $length + 1 {
+    $char: str-slice($string, $index, $index);
+    $match: str-index($chars, $char) != null;
+
+    @if (not $match) {
+      @return false;
+    }
+  }
+
+  @return $match;
+}
+
+/// Checks if the passed value is a valid class name.
+/// i.e. it's a string that consists of alphanumerics and '-' char
+/// @group bem
+/// @access private
+///
+/// @param { string } $value
+/// @return { bool }
+///
+@function -bem-is-class-name($value) {
+  @return type-of($value) == 'string' and -bem-test(to-lower-case($value), $-bem-class-name-chars);
+}
+
+/// Checks if the given value is a delimiter
+/// @group bem
+/// @access private
+///
+/// @param { string } $value
+/// @return { bool }
+///
+@function -bem-is-delimiter($value) {
+  @return type-of($value) == 'string' and -bem-test($value, $-bem-delimiter-chars);
+}
+
+/// Configures bem
+/// @group bem
+///
+/// @param { map } $config-props Configuration
+///
+/// @return { map } config-props
+///
+@function bem-config($config-props: null) {
+  @if ($config-props != null) {
+    $next-config: map-merge($-bem-config, $config-props);
+
+    @each $delimiter-prop in $-bem-delimiter-props {
+      $delimiter: map-get($next-config, $delimiter-prop);
+
+      @if (not -bem-is-delimiter($delimiter)) {
+        @error 'bem-config($config-props): #{ $delimiter-prop } should be a valid delimiter string';
+      }
+    }
+
+    @if (str-index(map-get($next-config, modifier-delimiter), map-get($next-config, element-delimiter)) != null) {
+      @error 'bem-config($config-props): $modifier-delimiter cannot contain $element-delimiter';
+    }
+
+    @each $formatter-prop in $-bem-formatter-props {
+      $formatter: map-get($next-config, $formatter-prop);
+
+      @if ($formatter != null and type-of($formatter) != 'function') {
+        @error 'bem-config($config-props): #{ $formatter-prop } should be a function or null';
+      }
+    }
+
+    $-bem-config: $next-config !global;
+  }
+
+  @return $-bem-config;
+}
+
+/// @group bem
+/// @access private
+///
+/// @param { * } $value
+///
+@function -bem-is-name($value) {
+  $element-delimiter: map-get($-bem-config, element-delimiter);
+  $modifier-delimiter: map-get($-bem-config, modifier-delimiter);
+
+  @return -bem-is-class-name($value)
+    and str-index($value, $element-delimiter) == null
+    and str-index($value, $modifier-delimiter) == null;
+}
+
+/// @group bem
+/// @access private
+///
+/// @param { * } $value
+///
+/// @return { string }
+///
+@function -bem-format-name($name) {
+  $formatter: map-get($-bem-config, formatter);
+
+  @return if($formatter == null, $name, call($formatter, $name));
+}
+
+/// @group bem
+/// @access private
+///
+/// @param { string } $type
+/// @param { * } $value
+///
+@function -bem-to-name($type, $value) {
+  @if (-bem-is-class-name($value)) {
+    $formatter: map-get($-bem-config, '#{ $type }-formatter');
+    $name: -bem-format-name(if($formatter == null, $value, call($formatter, $value)));
+
+    @if (-bem-is-name($name)) {
+      @return $name;
+    }
+  }
+
+  @error 'Invalid #{ $type } #{ inspect($value) }';
+}
+
+/// @group bem
+/// @access private
+///
+/// @param { string } $class-name
+/// @param { string } $mod-name
+/// @param { * } $mod-value
+/// @return { string }
+///
+@function -bem-format-modifier($class-name, $mod-name, $mod-value) {
+  $mod-name: -bem-to-name(modifier, $mod-name);
+  $mod-class-name: null;
+
+  @if ($mod-value != null and $mod-value != false and $mod-value != '') {
+    $mod-delimiter: map-get($-bem-config, modifier-delimiter);
+    $mod-class-name: '#{ $class-name }#{ $mod-delimiter }#{ $mod-name }';
+
+    @if ($mod-value != true) {
+      $mod-class-name: '#{ $mod-class-name }#{ $mod-delimiter }#{ -bem-to-name(modifier-value, '#{ $mod-value }') }';
+    }
+  }
+  @return $mod-class-name;
+}
+
+/// @group bem
+/// @access private
+///
+/// @param { string | list | map } $mods
+/// @return { map }
+///
+@function -bem-to-modifiers($mods) {
+  $type: type-of($mods);
+  $mods-map: null;
+
+  @if ($type == map) {
+    $mods-map: $mods;
+  } @else if ($type == list or $type == arglist) {
+    $mods-map: ();
+    $length: length($mods);
+
+    @for $index from 1 to $length + 1 {
+      $mods-map: map-merge($mods-map, (#{ nth($mods, $index) }: true));
+    }
+  } @else if ($type == string) {
+    $mods-map: (#{ $mods }: true);
+  } @else {
+    @error 'Invalid modifier #{ inspect($mods) }';
+  }
+
+  @return $mods-map;
+}
+
+/// @group bem
+/// @access private
+///
+/// @param { string } $class-name
+/// @param { string | list | map } $mods
+/// @return { string[] }
+///
+@function -bem-format-modifiers($class-name, $mods) {
+  $mod-class-names: [];
+
+  @if ($mods != null) {
+    $mods: -bem-to-modifiers($mods);
+
+    @each $mod-name, $mod-value in $mods {
+      $mod-class-name: -bem-format-modifier($class-name, $mod-name, $mod-value);
+
+      @if ($mod-class-name != null) {
+        $mod-class-names: append($mod-class-names, $mod-class-name);
+      }
+    }
+  }
+
+  @return $mod-class-names;
+}
+
+/// @group bem
+/// @access private
+///
+/// @param { string } $class-name
+/// @param { string | list | map } $mods [null]
+/// @param { * } $mixins...
+/// @return { ?list }
+///
+@function -bem-class-names($class-name, $mods: null, $mixins...) {
+  @return class-names($class-name, -bem-format-modifiers($class-name, $mods), $mixins...);
+}
+
+/// Creates block class names
+/// @group bem
+///
+/// @param { string } $block-name - Block name
+/// @param { string | list | map } $mods [null] - Modifiers
+/// @param { arglist } $mixins... - Mixins
+/// @return { ?list }
+///
+/// @example
+///
+/// bem-block(FooBar, (ted: qux, zoo: false)) // -> .FooBar.FooBar_ted_qux
+/// bem-block(FooBar, (ted: baz), bem-block(Qux, foo)) // -> .FooBar.FooBar_ted_baz.Qux.Qux_foo
+///
+@function bem-block($block-name, $mods: null, $mixins...) {
+  @return -bem-class-names(-bem-to-name(block, $block-name), $mods, $mixins...);
+}
+
+/// Creates element class names
+/// @group bem
+///
+/// @param { string } $block-name - Block name
+/// @param { string } $element-name - Element name
+/// @param { string | list | map } $mods [null] - Modifiers
+/// @param { arglist } $mixins - Mixins
+/// @return { ?list }
+///
+/// @example
+///
+/// bem-element(FooBar, baz, (ted: qux, zoo: false)) // -> .FooBar__baz.FooBar__baz_ted_qux
+/// bem-element(FooBar, baz, (ted: qux), bem-block(Qux, foo)) // -> .FooBar__baz.FooBar__baz_ted_qux.Qux.Qux_foo
+///
+@function bem-element($block-name, $element-name, $mods: null, $mixins...) {
+  $element-delimiter: map-get($-bem-config, element-delimiter);
+  $class-name: '#{ -bem-to-name(block, $block-name) }#{ $element-delimiter }#{ -bem-to-name(element, $element-name) }';
+
+  @return -bem-class-names($class-name, $mods, $mixins...);
+}
+
+/// Creates modifiers class names
+/// @group bem
+///
+/// @param { string } $class-name - Class name
+/// @param { string | list | map } $mods [null] - Modifiers
+/// @return { list }
+///
+/// @example
+///
+/// bem-modifiers(FooBar, (ted: qux, zoo: false)); // -> .FooBar_ted_qux
+///
+@function bem-modifiers($class-name, $mods: null) {
+  @if (not -bem-is-class-name($class-name)) {
+    @error 'Invalid class name #{ inspect($class-name) }';
+  }
+
+  @return class-names(-bem-format-modifiers($class-name, $mods));
+}
